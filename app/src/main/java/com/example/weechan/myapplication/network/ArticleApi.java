@@ -13,8 +13,8 @@ import retrofit2.http.Url;
 
 public interface ArticleApi {
 
-    @GET
+    @GET("article/random?dev=1")
     @Headers({"User-Agent:Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/64.0.3282.186 Safari/537.36",
     "Host:interface.meiriyiwen.com"})
-    rx.Observable<Article> getRandomArticle(@Url String url);
+    rx.Observable<Article> getRandomArticle();
 }
