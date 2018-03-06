@@ -1,9 +1,6 @@
 package com.example.weechan.myapplication.data.local
 
-import android.arch.persistence.room.Dao
-import android.arch.persistence.room.Delete
-import android.arch.persistence.room.Insert
-import android.arch.persistence.room.Query
+import android.arch.persistence.room.*
 import com.example.weechan.myapplication.bean.ArticleDetial
 import io.reactivex.Observable
 import io.reactivex.Observer
@@ -15,7 +12,7 @@ import io.reactivex.Observer
 @Dao
 interface ArticleDao {
 
-    @Insert
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun insertArticle(article : ArticleDetial)
 
     @Delete()
@@ -24,6 +21,12 @@ interface ArticleDao {
     @Query("DELETE FROM article")
     fun deleteAllArticles()
 
-    @Query("SELECT * FROM article LIMIT :count")
-    fun queryArticle(count : Int):List<ArticleDetial>
+    @Query("SELECT * FROM article ORDER BY id DESC")
+    fun queryArticle():List<ArticleDetial>
+
+    @Query("SELECT * FROM article WHERE id BETWEEN :from AND :to")
+    fun queryRange(from : Int , to : Int ):List<ArticleDetial>
+
+    @Query("SELECT * FROM article WHERE id IN (:range)")
+    fun queryRange(range:IntArray):List<ArticleDetial>
 }

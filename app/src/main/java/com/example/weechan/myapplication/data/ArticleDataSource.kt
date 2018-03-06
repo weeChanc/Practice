@@ -13,5 +13,5 @@ interface ArticleDataSource {
     fun deleteArticle(article:ArticleDetial)
     fun deleteAllArticles()
     fun getArticles(count : Int , callback:ArticleLocalDataSource.LoadArticlesCallback)
-    fun loadMoreArticles(callback: ArticleLocalDataSource.LoadArticleCallback)
+    fun downMoreArticle(callback: ArticleLocalDataSource.LoadArticleCallback)
 }

@@ -18,6 +18,7 @@ object RetrofitClient {
         val req = chain.request()
         Log.e("RetrofitClient REQ : ",req?.url()?.url().toString())
         chain.proceed(req)
+
     }.build()
 
     val articleRetrofit by lazy {

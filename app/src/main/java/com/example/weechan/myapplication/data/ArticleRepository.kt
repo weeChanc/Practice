@@ -7,10 +7,10 @@ import com.example.weechan.myapplication.data.remote.ArticleRemoteDataSource
 /**
  * Created by steve on 18-3-4.
  */
-class ArticleRepository(val localDataSource: ArticleLocalDataSource,
+open class ArticleRepository(val localDataSource: ArticleLocalDataSource,
                         val remoteDataSource: ArticleRemoteDataSource) : ArticleDataSource{
-    override fun loadMoreArticles(callback: ArticleLocalDataSource.LoadArticleCallback) {
-        remoteDataSource.loadMoreArticles(callback)
+    override fun downMoreArticle(callback: ArticleLocalDataSource.LoadArticleCallback) {
+        remoteDataSource.downMoreArticle(callback)
     }
 
     override fun saveArticle(article: ArticleDetial) {

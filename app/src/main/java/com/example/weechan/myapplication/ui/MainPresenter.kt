@@ -7,7 +7,7 @@ import com.example.weechan.myapplication.data.local.ArticleLocalDataSource
 /**
  * Created by steve on 18-3-4.
  */
-class MainPresenter(val view : MainContract.View , val articleRepository: ArticleRepository) : MainContract.Presenter{
+class MainPresenter(val view : MainContract.View , val articleRepository : ArticleRepository) : MainContract.Presenter{
 
     init{
         view.setPresenter(this)
@@ -15,39 +15,53 @@ class MainPresenter(val view : MainContract.View , val articleRepository: Articl
 
     val articles : MutableList<ArticleDetial> by lazy { mutableListOf<ArticleDetial>() }
 
-    override fun start() {
-        articleRepository.localDataSource.getArticles(10,object : ArticleLocalDataSource.LoadArticlesCallback{
+    override fun loadMoreArticle(count: Int) {
+        articleRepository.localDataSource.getArticles(count,object : ArticleLocalDataSource.LoadArticlesCallback{
             override fun onTasksLoaded(article: List<ArticleDetial>) {
                 articles.addAll(article)
                 view.showArticles(articles)
             }
-
             override fun onDataNotAvailable() {
                 view.showFailMessage()
             }
-
         })
-
-
     }
 
-    override fun loadMoreArticle() {
-        articleRepository.remoteDataSource.loadMoreArticles(object : ArticleLocalDataSource.LoadArticleCallback{
-            override fun onTasksLoaded(article: ArticleDetial) {
-                articles.add(article)
-                articleRepository.localDataSource.saveArticle(article)
-                view.showArticles(articles)
-                view.stopLoading()
+    override fun downMoreArticle(count: Int) {
 
+        var mCount = count
+
+        if(count == 0){
+            view.showArticles(articles)
+            view.stopLoading()
+            return
+        }
+
+        articleRepository.remoteDataSource.downMoreArticle(object : ArticleLocalDataSource.LoadArticleCallback{
+            override fun onTasksLoaded(article: ArticleDetial) {
+                articles.add(0,article)
+                articleRepository.localDataSource.saveArticle(article)
+                downMoreArticle(--mCount)
             }
 
             override fun onDataNotAvailable() {
-                view.showFailMessage()
-                view.stopLoading()
+                downMoreArticle(count)
             }
         }
 
         )
     }
+
+    override fun removeArticle(article: ArticleDetial) {
+        articleRepository.localDataSource.deleteArticle(article)
+    }
+
+
+
+    override fun start() {
+        loadMoreArticle(20)
+    }
+
+
 
 }

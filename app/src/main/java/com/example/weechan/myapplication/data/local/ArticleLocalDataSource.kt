@@ -12,7 +12,7 @@ import java.util.*
  * Created by steve on 18-3-4.
  */
 class ArticleLocalDataSource(private val dao: ArticleDao) : ArticleDataSource {
-    override fun loadMoreArticles(callback: LoadArticleCallback) {
+    override fun downMoreArticle(callback: LoadArticleCallback) {
         TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
     }
 
@@ -22,7 +22,7 @@ class ArticleLocalDataSource(private val dao: ArticleDao) : ArticleDataSource {
     }
 
     interface LoadArticleCallback {
-        fun onTasksLoaded(tasks: ArticleDetial)
+        fun onTasksLoaded(article: ArticleDetial)
         fun onDataNotAvailable()
     }
 
@@ -40,7 +40,7 @@ class ArticleLocalDataSource(private val dao: ArticleDao) : ArticleDataSource {
 
     override fun getArticles(count: Int, callback: LoadArticlesCallback) {
         async {
-            val datas = dao.queryArticle(count);
+            val datas = dao.queryArticle();
             runOnMain { callback.onTasksLoaded(datas) }
         }
     }

@@ -11,7 +11,8 @@ data class Article(val data: ArticleDetial)
 
 @Entity(tableName = "article")
 data class ArticleDetial(
-        @PrimaryKey
+        @PrimaryKey(autoGenerate = true)
+        val id : Int,
         val author: String,
         val title: String,
         val digest: String,

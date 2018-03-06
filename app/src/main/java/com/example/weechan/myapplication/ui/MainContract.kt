@@ -16,6 +16,8 @@ interface MainContract{
     }
 
     interface Presenter : BasePresenter {
-        fun loadMoreArticle()
+        fun loadMoreArticle(count : Int)
+        fun downMoreArticle(count : Int)
+        fun removeArticle(article:ArticleDetial)
     }
 }
