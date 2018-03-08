@@ -27,10 +27,8 @@ class ExampleUnitTest {
     @Mock
     lateinit var view : MainContract.View
 
-
+    @Mock
     lateinit var respostiroy : ArticleRepository
-
-    lateinit var captureArticle : ArticleDetial
 
     @Captor
     lateinit var loadMoreCallback : ArgumentCaptor<ArticleLocalDataSource.LoadArticleCallback>
@@ -42,8 +40,6 @@ class ExampleUnitTest {
         assertEquals(4, 2 + 2)
         MockitoAnnotations.initMocks(this)
         presenter = MainPresenter(view,respostiroy)
-        respostiroy =  ArticleRepository(ArticleLocalDataSource(),ArticleRemoteDataSource)
-//        assert(respostiroy.remoteDataSource != null)
     }
 
 
@@ -51,15 +47,15 @@ class ExampleUnitTest {
     fun createPresenter(){
         presenter = MainPresenter(view,respostiroy)
         verify(view).setPresenter(presenter)
-
     }
 
     @Test
     fun loadTaskFromRepostoryAndLoadToView(){
         presenter.downMoreArticle(10)
-        verify(respostiroy.remoteDataSource.downMoreArticle(loadMoreCallback.capture()))
-
+        verify(respostiroy.downMoreArticle(loadMoreCallback.capture()))
     }
+
+
 
 //    @Test
 //    fun

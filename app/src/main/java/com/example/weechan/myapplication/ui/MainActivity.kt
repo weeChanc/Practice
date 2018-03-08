@@ -49,10 +49,9 @@ class MainActivity : AppCompatActivity(), MainContract.View {
                 }
                startActivity(intent)
             }
-
-
         }
-        adapter?.notifyItemRangeInserted(0,9)
+        Log.e("MainActivity",articles.size.toString())
+        adapter?.notifyDataSetChanged()
         recyclerVivew.smoothScrollToPosition(0)
     }
 
@@ -67,11 +66,6 @@ class MainActivity : AppCompatActivity(), MainContract.View {
 
         MainPresenter(this, ArticleRepository(ArticleLocalDataSource(App.db.articleDao()), ArticleRemoteDataSource))
         mPresenter.start()
-
-        refresh.setOnLoadMoreListener {
-            mPresenter.loadMoreArticle(10)
-        }
-
 
         refresh.setOnRefreshListener {
             mPresenter.downMoreArticle(10)

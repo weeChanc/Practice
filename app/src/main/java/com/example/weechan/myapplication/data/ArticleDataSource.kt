@@ -2,6 +2,7 @@ package com.example.weechan.myapplication.data
 
 import com.example.weechan.myapplication.bean.ArticleDetial
 import com.example.weechan.myapplication.data.local.ArticleLocalDataSource
+import io.reactivex.Flowable
 import java.util.*
 
 /**
@@ -12,6 +13,6 @@ interface ArticleDataSource {
     fun saveArticle(article:ArticleDetial)
     fun deleteArticle(article:ArticleDetial)
     fun deleteAllArticles()
-    fun getArticles(count : Int , callback:ArticleLocalDataSource.LoadArticlesCallback)
+    fun getArticles(count : Int):Flowable<List<ArticleDetial>>
     fun downMoreArticle(callback: ArticleLocalDataSource.LoadArticleCallback)
 }

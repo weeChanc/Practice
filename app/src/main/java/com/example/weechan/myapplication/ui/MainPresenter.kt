@@ -1,67 +1,63 @@
 package com.example.weechan.myapplication.ui
 
+import android.util.Log
 import com.example.weechan.myapplication.bean.ArticleDetial
 import com.example.weechan.myapplication.data.ArticleRepository
 import com.example.weechan.myapplication.data.local.ArticleLocalDataSource
+import com.example.weechan.myapplication.utils.Fetcher
+import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.schedulers.Schedulers
+
 
 /**
  * Created by steve on 18-3-4.
  */
-class MainPresenter(val view : MainContract.View , val articleRepository : ArticleRepository) : MainContract.Presenter{
+class MainPresenter(val view: MainContract.View, val articleRepository: ArticleRepository) : MainContract.Presenter {
 
-    init{
+    init {
         view.setPresenter(this)
     }
 
-    val articles : MutableList<ArticleDetial> by lazy { mutableListOf<ArticleDetial>() }
+    val articles: MutableList<ArticleDetial> by lazy { mutableListOf<ArticleDetial>() }
 
     override fun loadMoreArticle(count: Int) {
-        articleRepository.localDataSource.getArticles(count,object : ArticleLocalDataSource.LoadArticlesCallback{
-            override fun onTasksLoaded(article: List<ArticleDetial>) {
-                articles.addAll(article)
-                view.showArticles(articles)
-            }
-            override fun onDataNotAvailable() {
-                view.showFailMessage()
-            }
-        })
+        articleRepository.getArticles(count)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe( { Log.e("MainPresenter","TOUCH");view.showArticles(articles)})
     }
 
     override fun downMoreArticle(count: Int) {
 
         var mCount = count
 
-        if(count == 0){
+        if (count == 0) {
             view.showArticles(articles)
             view.stopLoading()
             return
         }
 
-        articleRepository.remoteDataSource.downMoreArticle(object : ArticleLocalDataSource.LoadArticleCallback{
+        articleRepository.downMoreArticle(object : ArticleLocalDataSource.LoadArticleCallback {
             override fun onTasksLoaded(article: ArticleDetial) {
-                articles.add(0,article)
-                articleRepository.localDataSource.saveArticle(article)
-                downMoreArticle(--mCount)
+                articles.add(0, article)
+                articleRepository.saveArticle(article)
+                downMoreArticle(mCount-1)
             }
 
             override fun onDataNotAvailable() {
                 downMoreArticle(count)
             }
-        }
-
-        )
+    })
     }
 
     override fun removeArticle(article: ArticleDetial) {
-        articleRepository.localDataSource.deleteArticle(article)
+        articleRepository.deleteArticle(article)
     }
-
 
 
     override fun start() {
         loadMoreArticle(20)
     }
-
 
 
 }

@@ -5,6 +5,7 @@ import com.example.weechan.myapplication.bean.ArticleDetial
 import com.example.weechan.myapplication.data.ArticleDataSource
 import com.example.weechan.myapplication.utils.async
 import com.example.weechan.myapplication.utils.runOnMain
+import io.reactivex.Flowable
 import io.reactivex.schedulers.Schedulers
 import java.util.*
 
@@ -27,7 +28,7 @@ class ArticleLocalDataSource(private val dao: ArticleDao) : ArticleDataSource {
     }
 
     override fun saveArticle(article: ArticleDetial) {
-        async { dao.insertArticle(article) }
+        async { dao.insertArticle(article); }
     }
 
     override fun deleteArticle(article: ArticleDetial) {
@@ -38,11 +39,8 @@ class ArticleLocalDataSource(private val dao: ArticleDao) : ArticleDataSource {
         async { dao.deleteAllArticles() }
     }
 
-    override fun getArticles(count: Int, callback: LoadArticlesCallback) {
-        async {
-            val datas = dao.queryArticle();
-            runOnMain { callback.onTasksLoaded(datas) }
-        }
+    override fun getArticles(count: Int): Flowable<List<ArticleDetial>> {
+        return dao.queryArticle()
     }
 
 }

@@ -2,6 +2,7 @@ package com.example.weechan.myapplication.data.local
 
 import android.arch.persistence.room.*
 import com.example.weechan.myapplication.bean.ArticleDetial
+import io.reactivex.Flowable
 import io.reactivex.Observable
 import io.reactivex.Observer
 
@@ -22,11 +23,11 @@ interface ArticleDao {
     fun deleteAllArticles()
 
     @Query("SELECT * FROM article ORDER BY id DESC")
-    fun queryArticle():List<ArticleDetial>
+    fun queryArticle(): Flowable<List<ArticleDetial>>
 
     @Query("SELECT * FROM article WHERE id BETWEEN :from AND :to")
-    fun queryRange(from : Int , to : Int ):List<ArticleDetial>
+    fun queryRange(from : Int , to : Int ):Flowable<List<ArticleDetial>>
 
     @Query("SELECT * FROM article WHERE id IN (:range)")
-    fun queryRange(range:IntArray):List<ArticleDetial>
+    fun queryRange(range:IntArray):Flowable<List<ArticleDetial>>
 }
